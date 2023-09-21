@@ -36,20 +36,29 @@ The `Teams` dataset has \_*3015*\_ observations and \_*48*\_ variables.
 
 ### Exercise 2
 
-```{r}
+```{r team W/L record during years 2004-2012}
 mets <- Teams  %>% 
-  dplyr::filter(teamID == "NYM")
+  dplyr::filter(teamID == "NYN")
 my_mets <- mets %>% 
   dplyr::filter(yearID %in% 2004:2012) %>%
   dplyr::select(yearID,G,W,L)
-my_mets 
+my_mets
 ```
-
-...
 
 ### Exercise 3
 
-...
+```{r}
+mets_ben <- Teams |>
+  dplyr::select(yearID, teamID, G, W, L, RA, R) |>
+  dplyr::filter(teamID == "NYN" & yearID %in% 2004:2012)
+mets_ben
+```
+
+```{r renaming variable}
+mets_ben <- mets_ben |>
+  dplyr::rename(RS = R)    # new name = old name
+mets_ben
+```
 
 ### Exercise 4
 
