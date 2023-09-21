@@ -62,11 +62,31 @@ mets_ben
 
 ### Exercise 4
 
-...
+```{r winning percentage calculation}
+mets_ben <- mets_ben |>
+  dplyr::mutate(WPct = W/G)
+mets_ben
+```
+
+```{r calculation of expected number of wins }
+mets_ben <- mets_ben |>
+  dplyr::mutate(W_hat = WPct * G) 
+#The expected number of wins is then equal to the product of the expected winning percentage times the number of games.
+
+mets_ben
+```
 
 ### Exercise 5
 
-...
+```{r seasons better and worse than expectation}
+mets_ben <- mets_ben |>
+  dplyr::filter(teamID == "NYN")
+my_mets <- mets %>% 
+  dplyr::filter(yearID %in% 2004:2012) %>%
+  dplyr::select(yearID,G,W,L)
+
+mets_ben
+```
 
 ### Exercise 6
 
