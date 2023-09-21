@@ -1,8 +1,8 @@
 ---
 title: "BSMM-lab-1"
 subtitle: "BSMM 8740 Fall 2023"
-author: "Add your name here"
-date: "Add the date here"
+author: "Sepideh AhmadiTalei"
+date: "September 18, 2023"
 format: html
 editor: visual
 self-contained: true
@@ -24,13 +24,26 @@ library(Lahman)
 
 ### Exercise 1
 
-```{r glimpse-data}
-dplyr::glimpse(Teams)
+```{r}
+dim(Teams)
 ```
 
-The `Teams` dataset has \_\_\_ observations and \_\_\_ variables.
+```{r glimpse-data}
+dplyr::glimpse(Teams |> head())
+```
+
+The `Teams` dataset has \_*3015*\_ observations and \_*48*\_ variables.
 
 ### Exercise 2
+
+```{r}
+mets <- Teams  %>% 
+  dplyr::filter(teamID == "NYM")
+my_mets <- mets %>% 
+  dplyr::filter(yearID %in% 2004:2012) %>%
+  dplyr::select(yearID,G,W,L)
+my_mets 
+```
 
 ...
 
