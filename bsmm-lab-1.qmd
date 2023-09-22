@@ -37,11 +37,13 @@ The `Teams` dataset has \_*3015*\_ observations and \_*48*\_ variables.
 ### Exercise 2
 
 ```{r team W/L record during years 2004-2012}
+library(magrittr)
 mets <- Teams  %>% 
   dplyr::filter(teamID == "NYN")
 my_mets <- mets %>% 
   dplyr::filter(yearID %in% 2004:2012) %>%
   dplyr::select(yearID,G,W,L)
+
 my_mets
 ```
 
@@ -62,45 +64,89 @@ mets_ben
 
 ### Exercise 4
 
-```{r winning percentage calculation}
+```{r actual winning percentage calculation}
 mets_ben <- mets_ben |>
   dplyr::mutate(WPct = W/G)
 mets_ben
 ```
 
-```{r calculation of expected number of wins }
+```{r calculation of expected winning percentage}
 mets_ben <- mets_ben |>
-  dplyr::mutate(W_hat = WPct * G) 
-#The expected number of wins is then equal to the product of the expected winning percentage times the number of games.
+  dplyr::mutate(W_hat = 1/(1+((RA*RA)/(RS*RS)))) 
+mets_ben
+```
 
+```{r calculation of expected number of wins}
+mets_ben <- mets_ben |>
+  #The expected number of wins is then equal to the product of the expected winning percentage times the number of games.
+  dplyr::mutate(W_Exp = W_hat*G) 
 mets_ben
 ```
 
 ### Exercise 5
 
-```{r seasons better and worse than expectation}
-mets_ben <- mets_ben |>
-  dplyr::filter(teamID == "NYN")
-my_mets <- mets %>% 
-  dplyr::filter(yearID %in% 2004:2012) %>%
-  dplyr::select(yearID,G,W,L)
+```{r Determining seasons better than expectation}
+mets_ben_better <- mets_ben |>
+  dplyr::filter(W > W_Exp)
 
-mets_ben
+mets_ben_better
 ```
+
+The Mets were better than expectation in years *2006*, *2007* and *2012*.
+
+```{r Determining seasons worse than expectation}
+mets_ben_Worse <- mets_ben |>
+  dplyr::filter(W < W_Exp)
+
+mets_ben_Worse
+```
+
+The Mets were worse than expectation in years *2004, 2005, 2008*, *2009, 2010* and *2011*.
 
 ### Exercise 6
 
-...
+```{r Sorting from best year to worst year}
+dplyr::arrange(mets_ben, desc(W))
+```
 
 ### Exercise 7
 
-...
+```{r}
+mets_ben %>% 
+  dplyr::mutate(Diff = WPct - W_hat) |>
+  dplyr::arrange(desc(Diff))
+```
 
 ### Exercise 8
 
-...
+```{r Summarize the Mets performance}
+mets_ben |>
+  dplyr::summarize(
+    num_years = max(yearID) - min(yearID)+1, 
+    total_W = sum(W), 
+    total_L = sum(L), 
+    total_WPct = mean(WPct), 
+    sum_resid = sum(L)
+  )
+```
+
+Mets had a combined record of *728* wins and *730* losses, for an overall winning percentage of *49.9%*.
+
+```{r}
+dplyr::glimpse(Teams |> head())
+```
 
 ### Exercise 9
+
+```{r}
+ggplot(data = _____, aes(x = width, y = _____)) +
+  geom_point() + 
+  labs(
+    x = "_____", 
+    y = "_____", 
+    title = "_____"
+    )
+```
 
 ...
 
