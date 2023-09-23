@@ -8,6 +8,9 @@ editor: visual
 self-contained: true
 ---
 
+```{}
+```
+
 ## Setup
 
 Load packages and data:
@@ -64,19 +67,19 @@ mets_ben
 
 ### Exercise 4
 
-```{r actual winning percentage calculation}
+```{r Actual winning percentage calculation}
 mets_ben <- mets_ben |>
   dplyr::mutate(WPct = W/G)
 mets_ben
 ```
 
-```{r calculation of expected winning percentage}
+```{r calculation of expected winning percentage based on the model}
 mets_ben <- mets_ben |>
   dplyr::mutate(W_hat = 1/(1+((RA*RA)/(RS*RS)))) 
 mets_ben
 ```
 
-```{r calculation of expected number of wins}
+```{r calculation of expected number of wins based on the model}
 mets_ben <- mets_ben |>
   #The expected number of wins is then equal to the product of the expected winning percentage times the number of games.
   dplyr::mutate(W_Exp = W_hat*G) 
@@ -106,12 +109,12 @@ The Mets were worse than expectation in years *2004, 2005, 2008*, *2009, 2010* a
 ### Exercise 6
 
 ```{r Sorting from best year to worst year}
-dplyr::arrange(mets_ben, desc(W))
+dplyr::arrange(mets_ben, desc(WPct))
 ```
 
 ### Exercise 7
 
-```{r}
+```{r  Rank in terms of the team’s performance relative to the model}
 mets_ben %>% 
   dplyr::mutate(Diff = WPct - W_hat) |>
   dplyr::arrange(desc(Diff))
@@ -122,29 +125,33 @@ mets_ben %>%
 ```{r Summarize the Mets performance}
 mets_ben |>
   dplyr::summarize(
-    num_years = max(yearID) - min(yearID)+1, 
+    num_years = nrow(mets_ben),  
     total_W = sum(W), 
     total_L = sum(L), 
     total_WPct = mean(WPct), 
-    sum_resid = sum(L)
+    sum_resid = sum(WPct - W_hat)
   )
 ```
 
 Mets had a combined record of *728* wins and *730* losses, for an overall winning percentage of *49.9%*.
 
-```{r}
-dplyr::glimpse(Teams |> head())
+```         
 ```
 
 ### Exercise 9
 
 ```{r}
-ggplot(data = _____, aes(x = width, y = _____)) +
+library(ggplot2)
+
+```
+
+```{r visualizing the relationship between the price and width of Ikea furniture}
+ggplot(data = Ikea, aes(x = width, y = price)) +
   geom_point() + 
   labs(
-    x = "_____", 
-    y = "_____", 
-    title = "_____"
+    x = "Width of furniture", 
+    y = "Price in USD", 
+    title = "Graph of price of Ikea furniture based on the Width"
     )
 ```
 
@@ -152,4 +159,29 @@ ggplot(data = _____, aes(x = width, y = _____)) +
 
 ### Exercise 10
 
-...
+```{r Discretizing based on the general managers}
+mets_ben <- mets_ben |>
+  dplyr::mutate(
+    gm = dplyr::case_when(
+      yearID == 2004 ~ "Jim Duquette",  
+      yearID >= 2005 & yearID <= 2010 ~ "Omar Minaya",
+      yearID >= 2011 ~ "Sandy Alderson"
+    )
+  )
+
+mets_ben
+```
+
+### Exercise 11
+
+```{r Summarizing based on the general managers}
+mets_ben |>
+  dplyr::group_by(gm) %>%
+  dplyr::summarize(
+    total_W = sum(W), 
+    total_L = sum(L)
+  )
+```
+
+```{}
+```
